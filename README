@@ -1,0 +1,6 @@
+pySpiderScrape
+==============
+
+A python based OKCupid scraper/crawler. Similar to my previous project https://github.com/VW-Stephen/SpiderScrape, but about 10x faster (though less customizable).
+
+Full writeup pending: http://www.stephenleefischer.com
