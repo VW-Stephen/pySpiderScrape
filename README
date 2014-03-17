@@ -1,6 +1,6 @@
 pySpiderScrape
 ==============
 
-A python based OKCupid scraper/crawler. Similar to my previous project https://github.com/VW-Stephen/SpiderScrape, but about 10x faster (though less customizable).
+A python based OKCupid scraper/crawler. Similar to my previous project https://github.com/VW-Stephen/SpiderScrape, but about 10x faster (though less customizable). Contains both a single computer version of the app, and one that's set up for distributed work using AWS SQS.
 
 Full writeup pending: http://www.stephenleefischer.com

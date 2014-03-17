@@ -12,10 +12,10 @@ import urllib
 import warnings
 
 DATABASE = "profiles.db"
-USERNAME = "YOUR_USERNAME_HERE"
-PASSWORD = "YOUR_PASSWORD_HERE"
+USERNAME = "{okc_username}"
+PASSWORD = "{okc_password}"
 TEMPFILE = "current.html"
-STARTURL = "http://www.okcupid.com/profile/i_am_cupidbot"
+STARTURL = "http://www.okcupid.com/profile/{some_profile}"
 SLEEPSEC = 1
 
 # Init the DB, add the starting url if it needs to be
