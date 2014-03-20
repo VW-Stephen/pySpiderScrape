@@ -12,42 +12,32 @@ from twill.commands import *
 import urllib
 import warnings
 
+# Tweak these constants as needed
 USERNAME = "{okc_username}"
 PASSWORD = "{okc_password}"
 TEMPFILE = "current.html"
 SLEEPSEC = 0.5
 
-def ParsePage(url, soup):
-    # Extract the info from the soup and save it
-    e0 = soup.find("div", {"id" : "essay_text_0"})
-    e0 = '' if e0 is None else e0.text
-    e1 = soup.find("div", {"id" : "essay_text_1"})
-    e1 = '' if e1 is None else e1.text
-    e2 = soup.find("div", {"id" : "essay_text_2"})
-    e2 = '' if e2 is None else e2.text
-    e3 = soup.find("div", {"id" : "essay_text_3"})
-    e3 = '' if e3 is None else e3.text
-    e4 = soup.find("div", {"id" : "essay_text_4"})
-    e4 = '' if e4 is None else e4.text
-    e5 = soup.find("div", {"id" : "essay_text_5"})
-    e5 = '' if e5 is None else e5.text
-    e6 = soup.find("div", {"id" : "essay_text_6"})
-    e6 = '' if e6 is None else e6.text
-    e7 = soup.find("div", {"id" : "essay_text_7"})
-    e7 = '' if e7 is None else e7.text
-    e8 = soup.find("div", {"id" : "essay_text_8"})
-    e8 = '' if e8 is None else e8.text
-    gender = soup.find("span", {"id" : "ajax_gender"})
-    gender = '' if gender is None else gender.text
-    age = soup.find("span", {"id" : "ajax_age"})
-    age = '' if age is None else age.text
-    orientation = soup.find("span", {"id" : "ajax_orientation"})
-    orientation = '' if orientation is None else orientation.text
-    status = soup.find("span", {"id" : "ajax_status"})
-    status = '' if status is None else status.text
-    location = soup.find("span", {"id" : "ajax_location"})
-    location = '' if location is None else location.text
+def GetInnerHtml(soup, tag, id):
+    """
+    Searches the soup for the given tag+id, and returns the inner HTML, or an empty string when the tag+id doesn't exist.
 
+    soup - BeautifulSoup object for the page
+    tag  - The tag type to search for
+    id   - The ID attribute of the tag
+    """
+    t = soup.find(tag, {"id" : id})
+    if t is None:
+        return ''
+    return t.text
+
+def ParsePage(url, soup):
+    """
+    Parses the given soup, returns a dictionary of raw profile information.
+
+    url  - The URL of the page being parsed
+    soup - BeautifulSoup object for the page
+    """
     links = soup.find_all("a")
     goodLinks = []
     for l in links:
@@ -59,24 +49,25 @@ def ParsePage(url, soup):
             full = "http://www.okcupid.com" + match.group(0)[0:-1]
             goodLinks.append(full)
 
+    # Return a dictionary of the scraped data
     return {
-        'e0': e0,
-        'e1': e1,
-        'e2': e2,
-        'e3': e3,
-        'e4': e4,
-        'e5': e5,
-        'e6': e6,
-        'e7': e7,
-        'e8': e8,
-        'gender': gender,
-        'age': age,
-        'orientation': orientation,
-        'status': status,
-        'location': location,
+        'e0': GetInnerHtml(soup, "div", "essay_text_0"),
+        'e1': GetInnerHtml(soup, "div", "essay_text_1"),
+        'e2': GetInnerHtml(soup, "div", "essay_text_2"),
+        'e3': GetInnerHtml(soup, "div", "essay_text_3"),
+        'e4': GetInnerHtml(soup, "div", "essay_text_4"),
+        'e5': GetInnerHtml(soup, "div", "essay_text_5"),
+        'e6': GetInnerHtml(soup, "div", "essay_text_6"),
+        'e7': GetInnerHtml(soup, "div", "essay_text_7"),
+        'e8': GetInnerHtml(soup, "div", "essay_text_8"),
+        'gender': GetInnerHtml(soup, "span", "ajax_gender"),
+        'age': GetInnerHtml(soup, "span", "ajax_age"),
+        'orientation': GetInnerHtml(soup, "span", "ajax_orientation"),
+        'status': GetInnerHtml(soup, "span", "ajax_status"),
+        'location': GetInnerHtml(soup, "span", "ajax_location"),
         'url': url,
         'links' : goodLinks
-        }
+    }
 
 # Shut twill up
 f = open(os.devnull, "w")
@@ -138,7 +129,7 @@ while True:
         print "Error parsing HTML", e
         pass
     
-        # Don't murder their servers, sleep a bit
+    # Don't murder their servers, sleep a bit
     if SLEEPSEC > 0:
         time.sleep(SLEEPSEC)
     
