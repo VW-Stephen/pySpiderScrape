@@ -11,6 +11,7 @@ from twill.commands import *
 import urllib
 import warnings
 
+# Tweak these as needed
 DATABASE = "profiles.db"
 USERNAME = "{okc_username}"
 PASSWORD = "{okc_password}"

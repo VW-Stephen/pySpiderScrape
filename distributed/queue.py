@@ -4,14 +4,14 @@ import boto.sqs
 from boto.sqs.message import RawMessage
 import json
 
-###
-# Abstraction for working with SQS
-###
 class Queue:
-    ###
-    # Creates a new Queue abstraction, opens connections to the appropriate SQS queues
-    ###
+    """
+    Abstraction for working with SQS
+    """
     def __init__(self):
+        """
+        Connects to the various SQS queues
+        """
         key = "{SQS_key}"
         secret = "{SQS_secret}"
         region = "{SQS_region}"
@@ -22,38 +22,42 @@ class Queue:
         self.DataQueue = connection.get_queue("scrape_data")
         self.DataQueue.set_message_class(RawMessage)
 
-    ###
-    # Returns a pending URL from the queue
-    ###
     def GetUrl(self):
+        """
+        Returns a pending URL from the queue
+        """
         data = self.URLQueue.get_messages()
         if len(data) == 0:
             return None
         self.URLQueue.delete_message(data[0])
         return data[0].get_body()
-    
-    ###
-    # Adds the given URL to the pending queue
-    ###
+
     def AddUrl(self, url):
+        """
+        Adds the given URL to the pending queue
+
+        url - The url to add to the queue
+        """
         message = RawMessage()
         message.set_body(url)
         self.URLQueue.write(message)
 
-    ###
-    # Gets scrape data from the queue
-    ###
     def GetData(self):
+        """
+        Returns scraped data from the queue
+        """
         data = self.DataQueue.get_messages()
         if len(data) == 0:
             return None
         self.DataQueue.delete_message(data[0])
         return json.loads(data[0].get_body())
 
-    ###
-    # Adds the given scrape data to the queue
-    ###
     def AddData(self, data):
+        """
+        Adds the given scraped data to the queue
+
+        data - A dictionary of scrape data to add to the queue
+        """
         message = RawMessage()
         message.set_body(json.dumps(data))
         self.DataQueue.write(message)
